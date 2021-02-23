@@ -19,7 +19,7 @@ class App extends React.Component {
                 q: term,
                part: 'snippet',
                 type: 'video',
-                maxResults: 10,
+                maxResults: 100,
                 key: KEY
             
             }
