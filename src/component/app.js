@@ -1,62 +1,37 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import SearchBar from './SearchBar'
-import Youtube from './Youtube'
+import useVideos from '../Hooks/useVideos'
 import VideoList from './VideoList'
 import VideoDetail from './VideoDetail'
 
-const KEY = 'AIzaSyBcMb28aF9Aln0p33fJ-ZuqZWedrSsqJcU';
 
-class App extends React.Component {
-    state = { videos: [], selectedVideo: null };
+const App = () => {
+    const [selectedVideo, setSelectedVideo] = useState(null)
+    const [videos, search] = useVideos('best cars')
 
-    componentDidMount() {
-        this.onTermSubmit('expensive cars')
-    }
+    useEffect(() => {
+        setSelectedVideo(videos[0])
+        
+    }, [videos]);
 
-    onTermSubmit = async term => {
-       const response = await Youtube.get('/search', {
-            params: {
-                q: term,
-               part: 'snippet',
-                type: 'video',
-                maxResults: 100,
-                key: KEY
-            
-            }
-       });
-
-        this.setState({
-            videos: response.data.items,
-            selectedVideo: response.data.items[0]
-        })
-    };
-
-    onVideoSelect = (video) => {
-        this.setState({
-            selectedVideo: video
-        })
-    };
-
-    
-    render() {
-        return (
+     return (
             <div className="ui container" style={{marginTop:"10px"}}>
-                <SearchBar onFormSubmit={this.onTermSubmit} />
+                <SearchBar onFormSubmit={search} />
                 <div className="ui grid">
                     <div className="ui row">
                         <div className="">
-                            <VideoDetail video={this.state.selectedVideo} />
+                            <VideoDetail video={selectedVideo} />
                         </div>
                         <div className="">
                             <VideoList
-                                onVideoSelect={this.onVideoSelect}
-                                videos={this.state.videos} />
+                                onVideoSelect={setSelectedVideo}
+                                videos={videos} />
                         </div>
                     </div>
                 </div>
             </div>
         )
-    }
-};
+
+}
 
 export default App
